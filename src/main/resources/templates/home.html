@@ -73,13 +73,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    <tr th:each="note : ${notes}">
                                         <td>
-                                            <button type="button" class="btn btn-success">Edit</button>
-                                            <a class="btn btn-danger">Delete</a>
+                                            <button type="button" class="btn btn-success" th:onclick="showNoteModal([[${note.getNoteid()}]], [[${note.getNotetitle()}]], [[${note.getNotedescription()}]])">Edit</button>
+                                            <a th:href="@{/notes/delete/{id}(id=${note.getNoteid()})}" class="btn btn-danger"  >Delete</a>
                                         </td>
-                                        <th scope="row">Example Note Title</th>
-                                        <td>Example Note Description </td>
+                                        <th scope="row">
+                                            <span th:text="${note.getNotetitle()}"> Note title </span>
+                                        </th>
+                                        <td>
+                                            <span th:text="${note.getNotedescription()}"> Note text </span>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -95,15 +99,15 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="#" method="POST">
-                                            <input type="hidden" name="noteId" id="note-id">
+                                        <form action="#" th:action="@{/notes}" th:object="${newNote}" method="POST">
+                                            <input type="hidden" name="noteId" id="note-id" th:field="*{noteid}">
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">Title</label>
-                                                <input type="text" name= "noteTitle" class="form-control" id="note-title" maxlength="20" required>
+                                                <input type="text" name= "noteTitle" class="form-control" id="note-title" maxlength="20" required th:field="*{title}">
                                             </div>
                                             <div class="form-group">
                                                 <label for="note-description" class="col-form-label">Description</label>
-                                                <textarea class="form-control" name="noteDescription" id="note-description" rows="5" maxlength="1000" required></textarea>
+                                                <textarea class="form-control" name="noteDescription" id="note-description" rows="5" maxlength="1000" required th:field="*{content}"></textarea>
                                             </div>
                                             <button id="noteSubmit" type="submit" class="d-none"></button>
                                         </form>
