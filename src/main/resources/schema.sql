@@ -7,6 +7,18 @@ CREATE TABLE IF NOT EXISTS USERS (
   lastname VARCHAR(20)
 );
 
+INSERT INTO USERS
+    (username, salt, password, firstname, lastname)
+VALUES
+    (
+     'diego',
+     'c486gaA48+t5x2X9pvnoVA==',
+     '3T3XViEGwlFhV9gcOaoPiA==',
+     'Diego',
+     'Diego'
+    );
+
+
 CREATE TABLE IF NOT EXISTS NOTES (
     noteid INT PRIMARY KEY auto_increment,
     notetitle VARCHAR(20),
