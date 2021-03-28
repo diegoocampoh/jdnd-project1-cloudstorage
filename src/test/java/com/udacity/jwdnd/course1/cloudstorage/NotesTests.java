@@ -1,6 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
 import com.udacity.jwdnd.course1.cloudstorage.controller.form.NoteForm;
+import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
@@ -35,6 +36,7 @@ public class NotesTests {
     private LoginPage loginPage;
     private HomePage homePage;
     private NotePage notePage;
+    private CredentialPage credentialPage;
 
     @BeforeAll
     static void beforeAll() {
@@ -162,6 +164,40 @@ public class NotesTests {
         homePage.switchToNotes();
 
         Assertions.assertEquals(0, driver.findElements(By.className("noteTitle")).size());
+
+        homePage.logout();
+    }
+
+    @Test
+    public void createCredential(){
+        login(existingUsername, existingPassword);
+
+        driver.get("http://localhost:" + port + "/home");
+        homePage = new HomePage(driver);
+        credentialPage = new CredentialPage(driver);
+
+        String credentialUrl = "credential URL";
+        String credentialUsername = "credential username";
+        String credentialPassword = "credential password";
+
+        homePage.switchToCredentials();
+
+        credentialPage.addCredential(
+                credentialUrl,
+                credentialUsername,
+                credentialPassword
+        );
+
+        driver.get("http://localhost:" + port + "/home");
+        homePage = new HomePage(driver);
+
+        homePage.switchToCredentials();
+
+        Credential credential = credentialPage.getFirstCredential();
+
+        Assertions.assertEquals(credentialUrl, credential.getUrl());
+        Assertions.assertEquals(credentialUsername, credential.getUsername());
+        Assertions.assertEquals(credentialPassword, credential.getPassword());
 
         homePage.logout();
     }

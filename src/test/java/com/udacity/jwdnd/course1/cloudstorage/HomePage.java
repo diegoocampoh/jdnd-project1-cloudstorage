@@ -38,8 +38,9 @@ public class HomePage {
     }
 
     public void switchToCredentials(){
-        new WebDriverWait(driver, 10)
-                .until(ExpectedConditions.elementToBeClickable(navCredentialsTab)).click();
+        navCredentialsTab = new WebDriverWait(driver, 10)
+                .until(ExpectedConditions.elementToBeClickable(navCredentialsTab));
+        navCredentialsTab.click();
     }
 
     public void logout(){
