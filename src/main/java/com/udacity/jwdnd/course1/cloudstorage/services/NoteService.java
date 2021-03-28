@@ -5,6 +5,7 @@ import com.udacity.jwdnd.course1.cloudstorage.mapper.NoteMapper;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -15,13 +16,11 @@ import static java.util.Collections.emptyList;
 @Service
 public class NoteService {
 
+    @Autowired
     private NoteMapper noteMapper;
-    private UserMapper userMapper;
 
-    public NoteService(NoteMapper noteMapper, UserMapper userMapper) {
-        this.noteMapper = noteMapper;
-        this.userMapper = userMapper;
-    }
+    @Autowired
+    private UserMapper userMapper;
 
     public void addNote(NoteForm noteForm){
         User user = userMapper.getUser(noteForm.getUsername());

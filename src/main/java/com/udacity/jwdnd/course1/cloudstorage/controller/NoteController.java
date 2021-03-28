@@ -4,7 +4,6 @@ import com.udacity.jwdnd.course1.cloudstorage.controller.form.NoteForm;
 import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
@@ -18,7 +17,6 @@ public class NoteController {
     @PostMapping
     public String addNote(
             @ModelAttribute("newNote") NoteForm noteForm,
-            Model model,
             Principal principal
     ){
         noteForm.setUsername(principal.getName());
@@ -29,7 +27,6 @@ public class NoteController {
             noteService.addNote(noteForm);
         }
 
-        model.addAttribute("notes", noteService.getUserNotes(principal.getName()));
         return "redirect:/home";
     }
 
