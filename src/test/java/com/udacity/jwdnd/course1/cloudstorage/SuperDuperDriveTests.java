@@ -20,7 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class NotesTests {
+public class SuperDuperDriveTests {
     @LocalServerPort
     private int port;
 
@@ -38,6 +38,7 @@ public class NotesTests {
     private static String existingUsername = "user";
     private static String existingPassword = "Tr$81m8TJ3iJ6";
 
+    private SignupPage signupPage;
     private LoginPage loginPage;
     private HomePage homePage;
     private NotePage notePage;
@@ -106,6 +107,45 @@ public class NotesTests {
         }
     }
 
+    private void signup(String username, String password){
+        driver.get("http://localhost:" + port + "/signup");
+        signupPage = new SignupPage(driver);
+        signupPage.typeSignupDetails(
+                "testUser",
+                "testUser",
+                username,
+                password);
+        signupPage.clickSignup();
+    }
+
+    @Test
+    public void testSignupAndLoginAndLogut() {
+
+        String username = "username";
+        String password = "password";
+        signup(username, password);
+        Assertions.assertTrue(signupPage.getSuccessMessage().startsWith("You successfully signed up!"));
+
+        login(username, password);
+
+        driver.get("http://localhost:" + port + "/home");
+        homePage = new HomePage(driver);
+        homePage.logout();
+
+        //after logging out and trying to hit Home, we should be redirected to login.
+
+        WebDriverWait wait = new WebDriverWait(driver, 60);
+        WebElement login = wait.until(webDriver -> webDriver.findElement(By.id("loginForm")));
+        Assertions.assertTrue(login.isDisplayed());
+    }
+
+    @Test
+    public void testUnauthorizedAccess() {
+        driver.get("http://localhost:" + this.port + "/home");
+        WebDriverWait wait = new WebDriverWait(driver, 60);
+        WebElement login = wait.until(webDriver -> webDriver.findElement(By.id("loginForm")));
+        Assertions.assertTrue(login.isDisplayed());
+    }
 
     private void login(String username, String password){
         driver.get("http://localhost:" + port + "/login");
