@@ -36,7 +36,10 @@ public class CredentialService {
                             credentialForm.getUrl(),
                             credentialForm.getUsername(),
                             EncryptionService.PASSWORD,
-                            credentialForm.getPassword(),
+                            encryptionService.encryptValue(
+                                    credentialForm.getPassword(),
+                                    EncryptionService.PASSWORD
+                            ),
                             user.getUserId())
             );
         }
@@ -62,7 +65,7 @@ public class CredentialService {
     }
 
     public void updateCredential(CredentialForm credentialForm){
-        User user = userMapper.getUser(credentialForm.getUsername());
+        User user = userMapper.getUser(credentialForm.getOwnerUsername());
         if (user != null) {
             credentialMapper.update(
                     new Credential(
@@ -70,7 +73,10 @@ public class CredentialService {
                             credentialForm.getUrl(),
                             credentialForm.getUsername(),
                             null,
-                            credentialForm.getPassword(),
+                            encryptionService.encryptValue(
+                                    credentialForm.getPassword(),
+                                    EncryptionService.PASSWORD
+                            ),
                             user.getUserId())
             );
         }

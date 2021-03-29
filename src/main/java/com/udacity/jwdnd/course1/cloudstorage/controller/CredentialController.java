@@ -27,10 +27,6 @@ public class CredentialController {
             Principal principal
     ){
         credentialForm.setOwnerUsername(principal.getName());
-        credentialForm.setPassword(encryptionService.encryptValue(
-                credentialForm.getPassword(),
-                EncryptionService.PASSWORD
-        ));
 
         if (credentialForm.getCredentialid() != null){
             credentialService.updateCredential(credentialForm);

@@ -1,9 +1,11 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
+import com.udacity.jwdnd.course1.cloudstorage.controller.form.CredentialForm;
 import com.udacity.jwdnd.course1.cloudstorage.controller.form.NoteForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
+import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -27,6 +29,9 @@ public class NotesTests {
 
     @Autowired
     private NoteService noteService;
+
+    @Autowired
+    private CredentialService credentialService;
 
     private static WebDriver driver;
     private static boolean userSignupDone = false;
@@ -74,6 +79,26 @@ public class NotesTests {
                             "userWithNote",
                             "existing note",
                             "existing ntoe description"
+                    )
+            );
+
+            userService.createUser(new User(
+                    null	,
+                    "userWithCredential",
+                    null,
+                    "userWithCredential",
+                    "userWithCredential",
+                    "Selenium"
+
+            ));
+
+            credentialService.addCredential(
+                    new CredentialForm(
+                            null,
+                            "credential url",
+                            "userWithCredential",
+                            "cred-username",
+                            "cred-password"
                     )
             );
 
@@ -201,6 +226,56 @@ public class NotesTests {
 
         homePage.logout();
     }
+
+    @Test
+    public void editCredential(){
+        login("userWithCredential", "userWithCredential");
+
+        driver.get("http://localhost:" + port + "/home");
+        homePage = new HomePage(driver);
+
+        homePage.switchToCredentials();
+
+        String credentialUrl = "updated credential URL";
+        String credentialUsername = "updated credential username";
+        String credentialPassword = "updated credential password";
+
+        credentialPage = new CredentialPage(driver);
+        credentialPage.editCredential(credentialUrl, credentialUsername, credentialPassword);
+
+        driver.get("http://localhost:" + port + "/home");
+        homePage = new HomePage(driver);
+
+        homePage.switchToCredentials();
+
+        Credential credential = credentialPage.getFirstCredential();
+
+        Assertions.assertEquals(credentialUrl, credential.getUrl());
+        Assertions.assertEquals(credentialUsername, credential.getUsername());
+        Assertions.assertEquals(credentialPassword, credential.getPassword());
+
+        homePage.logout();
+    }
+
+
+    @Test
+    public void deleteCredential(){
+        login("userWithCredential", "userWithCredential");
+
+        driver.get("http://localhost:" + port + "/home");
+        homePage = new HomePage(driver);
+        homePage.switchToCredentials();
+        credentialPage = new CredentialPage(driver);
+        credentialPage.delete();
+        driver.get("http://localhost:" + port + "/home");
+        homePage = new HomePage(driver);
+        homePage.switchToCredentials();
+
+        Assertions.assertEquals(0, driver.findElements(By.className("credentialUrl")).size());
+
+        homePage.logout();
+    }
+
 
 
     @AfterAll

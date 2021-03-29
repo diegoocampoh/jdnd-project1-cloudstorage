@@ -1,7 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
-import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -68,7 +67,6 @@ public class CredentialPage {
         credentialUsernameInput.sendKeys(username);
         credentialPasswordInput.sendKeys(password);
 
-
         credentialModalConfirmButton.click();
     }
 
@@ -90,22 +88,27 @@ public class CredentialPage {
         closeCredentialModal.click();
         return credential;
     }
-//
-//    public void editNote(String title, String desc){
-//        editNoteButton = new WebDriverWait(driver, 15)
-//                .until(ExpectedConditions.elementToBeClickable(editNoteButton));
-//        editNoteButton.click();
-//
-//        noteTitleInput = new WebDriverWait(driver, 15)
-//                .until(ExpectedConditions.visibilityOf(noteTitleInput));
-//        noteTitleInput.clear();
-//        noteTitleInput.sendKeys(title);
-//
-//        noteDescriptionInput.clear();
-//        noteDescriptionInput.sendKeys(desc);
-//
-//        noteModalConfirmButton.click();
-//    }
+
+    public void editCredential(
+            String url,
+            String username,
+            String password){
+        existingCredentialEditButton = new WebDriverWait(driver, 15)
+                .until(ExpectedConditions.elementToBeClickable(existingCredentialEditButton));
+        existingCredentialEditButton.click();
+
+        credentialUrlInput = new WebDriverWait(driver, 15)
+                .until(ExpectedConditions.visibilityOf(credentialUrlInput));
+        credentialUrlInput.clear();
+        credentialUsernameInput.clear();
+        credentialPasswordInput.clear();
+
+        credentialUrlInput.sendKeys(url);
+        credentialUsernameInput.sendKeys(username);
+        credentialPasswordInput.sendKeys(password);
+
+        credentialModalConfirmButton.click();
+    }
 
     public void delete(){
         deleteNoteButton = new WebDriverWait(driver, 15)
