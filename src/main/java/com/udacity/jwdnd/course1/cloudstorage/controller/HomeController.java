@@ -38,6 +38,7 @@ public class HomeController {
         model.addAttribute("credentials", credentialService.getUserCredentials(principal.getName()));
         model.addAttribute("files", fileService.getUserFiles(principal.getName()));
         model.addAttribute("fileUploadError", fileUploadError);
+
         return "home";
     }
 
