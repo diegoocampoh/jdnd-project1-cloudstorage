@@ -8,9 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -19,7 +22,7 @@ import java.security.Principal;
 
 @Controller
 @RequestMapping("files")
-public class FileController {
+public class FileController implements HandlerExceptionResolver {
 
     @Autowired
     private FileService fileService;
@@ -90,5 +93,18 @@ public class FileController {
     public String deleteFile(@PathVariable Integer id) {
         fileService.deleteFile(id);
         return "redirect:/home";
+    }
+
+    @Override
+    public ModelAndView resolveException(
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse,
+            Object o,
+            Exception e) {
+        ModelAndView modelAndView = new ModelAndView("result");
+        if (e instanceof MaxUploadSizeExceededException) {
+            modelAndView.getModel().put("errorMessage", "File size exceeds limit, please upload a smaller file.");
+        }
+        return modelAndView;
     }
 }
