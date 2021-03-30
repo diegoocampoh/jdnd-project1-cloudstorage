@@ -24,22 +24,35 @@ public class CredentialController {
     @PostMapping
     public String addCredential(
             @ModelAttribute("newCredential") CredentialForm credentialForm,
+            Model model,
             Principal principal
     ){
-        credentialForm.setOwnerUsername(principal.getName());
-
-        if (credentialForm.getCredentialid() != null){
-            credentialService.updateCredential(credentialForm);
-        } else {
-            credentialService.addCredential(credentialForm);
+        try {
+            credentialForm.setOwnerUsername(principal.getName());
+            if (credentialForm.getCredentialid() != null){
+                credentialService.updateCredential(credentialForm);
+                model.addAttribute("successMessage", "Credential updated successfully");
+            } else {
+                credentialService.addCredential(credentialForm);
+                model.addAttribute("successMessage", "Credential created successfully");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Error creating credential.");
         }
 
-        return "redirect:/home";
+        return "result";
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteNote(@PathVariable Integer id){
-        credentialService.deleteCredential(id);
-        return "redirect:/home";
+    public String deleteNote(@PathVariable Integer id, Model model){
+        try {
+            credentialService.deleteCredential(id);
+            model.addAttribute("successMessage", "Credential deleted successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Error deleting credential.");
+        }
+        return "result";
     }
 }

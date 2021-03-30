@@ -6,6 +6,7 @@ import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -34,14 +35,12 @@ public class FileController implements HandlerExceptionResolver {
             Principal principal
     ) {
         FileForm fileForm = null;
-        String fileUploadErrorMessage = null;
-
         if (file.getOriginalFilename().isEmpty()){
             return new ModelAndView("redirect:/home", model);
         }
 
         if (!fileService.isFilenameAvailable(file.getOriginalFilename())) {
-            fileUploadErrorMessage = "File already exists.";
+            model.addAttribute("errorMessage", "Error uploading file. File already exists.");
         } else {
             try {
                 fileForm = new FileForm(
@@ -51,19 +50,14 @@ public class FileController implements HandlerExceptionResolver {
                         file.getBytes(),
                         principal.getName()
                 );
+                fileService.addFile(fileForm);
+                model.addAttribute("successMessage", "File created successfully");
             } catch (IOException e) {
                 e.printStackTrace();
-                fileUploadErrorMessage = e.getMessage();
-
+                model.addAttribute("errorMessage", "Error uploading file.");
             }
-            fileService.addFile(fileForm);
         }
-
-        if (fileUploadErrorMessage != null) {
-            model.addAttribute("fileUploadError", fileUploadErrorMessage);
-        }
-
-        return new ModelAndView("redirect:/home", model);
+        return new ModelAndView("result", model);
     }
 
     @RequestMapping(value="/download/{id}", method=RequestMethod.GET)
@@ -90,9 +84,15 @@ public class FileController implements HandlerExceptionResolver {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteFile(@PathVariable Integer id) {
-        fileService.deleteFile(id);
-        return "redirect:/home";
+    public String deleteFile(@PathVariable Integer id, Model model) {
+        try {
+            fileService.deleteFile(id);
+            model.addAttribute("successMessage", "File deleted successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Error deleting file.");
+        }
+        return "result";
     }
 
     @Override
