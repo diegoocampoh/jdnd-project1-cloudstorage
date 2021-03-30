@@ -102,7 +102,7 @@ public class FileController implements HandlerExceptionResolver {
             Object o,
             Exception e) {
         ModelAndView modelAndView = new ModelAndView("result");
-        if (e instanceof MaxUploadSizeExceededException) {
+         if (e instanceof MaxUploadSizeExceededException) {
             modelAndView.getModel().put("errorMessage", "File size exceeds limit, please upload a smaller file.");
         }
         return modelAndView;
